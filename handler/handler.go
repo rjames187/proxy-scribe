@@ -1,26 +1,21 @@
 package handler
 
 import (
-	"io"
-	"log"
 	"net/http"
+	"proxy-scribe/handler/methods"
 )
 
-type ProxyHandler struct {
+type MethodMux struct {
+	HandlerFuncs map[string]func(http.ResponseWriter, *http.Request)
 }
 
-func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	host := "https://www.boredapi.com"
-	path := r.URL.Path
-	URL := host + path
-	log.Printf("Request %s ...", URL)
-	resp, err := http.Get(URL)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-	w.WriteHeader(resp.StatusCode)
-	body, _ := io.ReadAll(resp.Body)
-	log.Print(string(body))
-	w.Write(body)
+func (mm *MethodMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fn := mm.HandlerFuncs[r.Method]
+	fn(w, r)
+}
+
+func NewMethodMux() *MethodMux {
+	mm := MethodMux{}
+	mm.HandlerFuncs["GET"] = methods.HandleGet
+	return &mm
 }
