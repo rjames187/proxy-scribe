@@ -8,6 +8,6 @@ import (
 
 func main() {
 	log.Print("Proxy is listening")
-	mm := handler.NewMethodMux()
-	log.Fatal(http.ListenAndServe(":4000", mm))
+	controller := &handler.ProxyHandler{}
+	log.Fatal(http.ListenAndServe(":4000", controller))
 }
