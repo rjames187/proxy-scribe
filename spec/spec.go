@@ -1,13 +1,5 @@
 package spec
 
-type Spec struct {
-	paths map[string]Path
-}
+func (s *Spec) readInPath(path string) {
 
-type Path struct {
-	path         string
-	method       string
-	requestBody  interface{}
-	responseCode int
-	responseBody interface{}
 }
