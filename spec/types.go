@@ -1,12 +1,12 @@
 package spec
 
 type Spec struct {
-	paths map[string]Path
+	paths map[string]*Path
 }
 
 type Path struct {
-	path   string
-	method map[string]PathMethod
+	path    string
+	methods map[string]*PathMethod
 }
 
 type PathMethod struct {
@@ -18,7 +18,7 @@ type PathMethod struct {
 
 func NewSpec() *Spec {
 	spec := Spec{
-		paths: make(map[string]Path),
+		paths: make(map[string]*Path),
 	}
 	return &spec
 }
