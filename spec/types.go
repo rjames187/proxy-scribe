@@ -1,24 +1,22 @@
 package spec
 
 type Spec struct {
-	paths map[string]*Path
+	Paths map[string]*Path
 }
 
 type Path struct {
-	path    string
 	methods map[string]*PathMethod
 }
 
 type PathMethod struct {
-	method       string
-	requestBody  interface{}
-	responseCode int
-	responseBody interface{}
+	RequestBody  map[string]interface{}
+	ResponseCode int
+	ResponseBody map[string]interface{}
 }
 
 func NewSpec() *Spec {
 	spec := Spec{
-		paths: make(map[string]*Path),
+		Paths: make(map[string]*Path),
 	}
 	return &spec
 }

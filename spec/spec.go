@@ -2,17 +2,17 @@ package spec
 
 import "strings"
 
-func (s *Spec) readInPath(path string) {
-	_, ok := s.paths[path]
+func (s *Spec) ReadInPath(path string) {
+	_, ok := s.Paths[path]
 	if ok {
 		return
 	}
-	s.paths[path] = &Path{}
+	s.Paths[path] = &Path{}
 }
 
-func (s *Spec) readInMethod(path string, method string) {
+func (s *Spec) ReadInMethod(path string, method string) {
 	method = strings.ToLower(method)
-	pathEntity, _ := s.paths[path]
+	pathEntity := s.Paths[path]
 	_, ok := pathEntity.methods[method]
 	if ok {
 		return
@@ -20,9 +20,9 @@ func (s *Spec) readInMethod(path string, method string) {
 	pathEntity.methods[method] = &PathMethod{}
 }
 
-func (s *Spec) readInReq(path string, method string, reqBody interface{}) {
+func (s *Spec) ReadInReq(path string, method string, reqBody map[string]interface{}) {
 	method = strings.ToLower(method)
-	pathEntity, _ := s.paths[path]
-	methodEntity, _ := pathEntity.methods[method]
-	methodEntity.requestBody = reqBody
+	pathEntity := s.Paths[path]
+	methodEntity := pathEntity.methods[method]
+	methodEntity.RequestBody = convertBody(reqBody)
 }

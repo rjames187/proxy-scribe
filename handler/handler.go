@@ -1,9 +1,13 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"proxy-scribe/spec"
 )
 
 type ProxyHandler struct {
@@ -14,8 +18,23 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path
 	contentType := r.Header.Get("Content-Type")
-	reqBody := r.Body
 	method := r.Method
+	reqBody := r.Body
+	defer reqBody.Close()
+	var reqBodyData map[string]interface{}
+
+	decoder := json.NewDecoder(reqBody)
+	if err := decoder.Decode(&reqBodyData); err != nil {
+		fmt.Print("Error! Problem decoding JSON body")
+		os.Exit(1)
+	}
+
+	// record request information
+	doc := spec.NewSpec()
+	doc.ReadInPath(path)
+	doc.ReadInMethod(path, method)
+	doc.ReadInReq(path, method, reqBodyData)
+
 
 	URL := host + path
 	log.Printf("Requesting %s ...", URL)
