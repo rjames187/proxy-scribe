@@ -18,17 +18,20 @@ func (s *Spec) ReadInPath(path string) {
 func (s *Spec) ReadInMethod(path string, method string) {
 	method = strings.ToLower(method)
 	pathEntity := s.Paths[path]
-	_, ok := pathEntity.methods[method]
+	if pathEntity.Methods == nil {
+		pathEntity.Methods = make(map[string]*PathMethod)
+	}
+	_, ok := pathEntity.Methods[method]
 	if ok {
 		return
 	}
-	pathEntity.methods[method] = &PathMethod{}
+	pathEntity.Methods[method] = &PathMethod{}
 }
 
 func (s *Spec) ReadInReq(path string, method string, reqBody map[string]interface{}) {
 	method = strings.ToLower(method)
 	pathEntity := s.Paths[path]
-	methodEntity := pathEntity.methods[method]
+	methodEntity := pathEntity.Methods[method]
 	methodEntity.RequestBody = convertBody(reqBody)
 }
 

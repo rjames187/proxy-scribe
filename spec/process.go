@@ -39,7 +39,10 @@ func convertBody(data map[string]interface{}) map[string]interface{} {
 			}
 			result[key] = array
 		case map[string]interface{}:
-			result[key] = convertBody(v)
+			object := make(map[string]interface{})
+			object["type"] = "object"
+			object["properties"] = convertBody(v)
+			result[key] = object
 		default:
 			fmt.Print("Unkown type detected: ")
 			fmt.Print(value)

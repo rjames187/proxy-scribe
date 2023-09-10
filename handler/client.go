@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func sendReq(m string, URL string, contentType string, body io.ReadCloser) (*http.Response, error) {
+func sendReq(m string, URL string, contentType string, body io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(m, URL, body)
 	if err != nil {
 		return nil, err

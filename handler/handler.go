@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -21,9 +22,11 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	reqBody := r.Body
 	defer reqBody.Close()
+	var buffer bytes.Buffer
 	var reqBodyData map[string]interface{}
 
-	decoder := json.NewDecoder(reqBody)
+	io.Copy(&buffer, reqBody)
+	decoder := json.NewDecoder(bytes.NewReader(buffer.Bytes()))
 	if err := decoder.Decode(&reqBodyData); err != nil {
 		fmt.Print("Error! Problem decoding JSON body")
 		os.Exit(1)
@@ -34,11 +37,13 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.ReadInPath(path)
 	doc.ReadInMethod(path, method)
 	doc.ReadInReq(path, method, reqBodyData)
+	doc.OutputSpec()
 
 
 	URL := host + path
 	log.Printf("Requesting %s ...", URL)
-	resp, err := sendReq(method, URL, contentType, reqBody)
+	reader := bytes.NewReader(buffer.Bytes())
+	resp, err := sendReq(method, URL, contentType, reader)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,7 +5,7 @@ type Spec struct {
 }
 
 type Path struct {
-	methods map[string]*PathMethod
+	Methods map[string]*PathMethod
 }
 
 type PathMethod struct {
