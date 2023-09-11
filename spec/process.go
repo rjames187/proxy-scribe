@@ -3,6 +3,7 @@ package spec
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 func buildPrimitive(kind string, example interface{}) map[string]interface{} {
@@ -51,4 +52,27 @@ func convertBody(data map[string]interface{}) map[string]interface{} {
 	}
 
 	return result
+}
+
+func parseNumString(input string) (bool, interface{}) {
+	if intVal, err := strconv.Atoi(input); err == nil {
+		return true, intVal
+	}
+
+	if floatVal, err := strconv.ParseFloat(input, 64); err == nil {
+		return true, floatVal
+	}
+
+	return false, nil
+}
+
+func getOpenAPINumType(num interface{}) string {
+	switch num.(type) {
+	case float32:
+		return "number"
+	case float64:
+		return "number"
+	default:
+		return "integer"
+	}
 }
