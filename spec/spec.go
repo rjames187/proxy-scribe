@@ -32,7 +32,15 @@ func (s *Spec) ReadInReq(path string, method string, reqBody map[string]interfac
 	method = strings.ToLower(method)
 	pathEntity := s.Paths[path]
 	methodEntity := pathEntity.Methods[method]
-	methodEntity.RequestBody = convertBody(reqBody)
+	if methodEntity.RequestBody == nil {
+		methodEntity.RequestBody = make(map[string]interface{})
+	}
+
+	media := make(map[string]interface{})
+	media["schema"] = convertBody(reqBody)
+	content := make(map[string]interface{})
+	content["application/json"] = media
+	methodEntity.RequestBody["content"] = content
 }
 
 func (s *Spec) OutputSpec() {

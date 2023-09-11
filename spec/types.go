@@ -9,9 +9,8 @@ type Path struct {
 }
 
 type PathMethod struct {
-	RequestBody  map[string]interface{}
-	ResponseCode int
-	ResponseBody map[string]interface{}
+	RequestBody map[string]interface{}
+	Responses   map[string]interface{}
 }
 
 func NewSpec() *Spec {
