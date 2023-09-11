@@ -39,8 +39,6 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.ReadInMethod(path, method)
 	doc.ReadInReq(path, method, reqBodyData)
 	doc.ReadInQParams(path, method, queryParams)
-	doc.OutputSpec()
-
 
 	URL := host + path
 	log.Printf("Requesting %s ...", URL)
@@ -51,8 +49,18 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	returnBody, _ := io.ReadAll(resp.Body)
+	var resBodyData map[string]interface{}
+	buffer = bytes.Buffer{}
+	io.Copy(&buffer, resp.Body)
+	decoder = json.NewDecoder(bytes.NewReader(buffer.Bytes()))
+	if err := decoder.Decode(&resBodyData); err != nil {
+		fmt.Print("Error! Problem decoding JSON body")
+		os.Exit(1)
+	}
+	doc.ReadInRes(path, method, resp.StatusCode, resBodyData)
+	doc.OutputSpec()
+
 	w.WriteHeader(resp.StatusCode)
 	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
-	w.Write(returnBody)
+	w.Write(buffer.Bytes())
 }

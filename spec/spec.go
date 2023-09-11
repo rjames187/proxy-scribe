@@ -43,6 +43,23 @@ func (s *Spec) ReadInReq(path string, method string, reqBody map[string]interfac
 	methodEntity.RequestBody["content"] = content
 }
 
+func (s *Spec) ReadInRes(path string, method string, status int, resBody map[string]interface{}) {
+	method = strings.ToLower(method)
+	pathEntity := s.Paths[path]
+	methodEntity := pathEntity.Methods[method]
+	if methodEntity.Responses == nil {
+		methodEntity.Responses = make(map[string]interface{})
+	}
+
+	media := make(map[string]interface{})
+	media["schema"] = convertBody(resBody)
+	content := make(map[string]interface{})
+	content["application/json"] = media
+	code := make(map[string]interface{})
+	code["content"] = content
+	methodEntity.Responses[fmt.Sprint(status)] = code
+}
+
 func (s *Spec) ReadInQParams(path string, method string, params map[string][]string) {
 	method = strings.ToLower(method)
 	pathEntity := s.Paths[path]
