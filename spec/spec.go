@@ -43,6 +43,23 @@ func (s *Spec) ReadInReq(path string, method string, reqBody map[string]interfac
 	methodEntity.RequestBody["content"] = content
 }
 
+func (s *Spec) ReadInQParams(path string, method string, params map[string][]string) {
+	method = strings.ToLower(method)
+	pathEntity := s.Paths[path]
+	methodEntity := pathEntity.Methods[method]
+	if methodEntity.Parameters == nil {
+		methodEntity.Parameters = []map[string]string{}
+	}
+
+	for p := range params {
+		param := make(map[string]string)
+		param["name"] = p
+		param["in"] = "query"
+
+		methodEntity.Parameters = append(methodEntity.Parameters, param)
+	}
+}
+
 func (s *Spec) OutputSpec() {
 	data := s
 

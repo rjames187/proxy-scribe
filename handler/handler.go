@@ -18,6 +18,7 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	host := "https://api.restful-api.dev"
 
 	path := r.URL.Path
+	queryParams := r.URL.Query()
 	contentType := r.Header.Get("Content-Type")
 	method := r.Method
 	reqBody := r.Body
@@ -37,6 +38,7 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.ReadInPath(path)
 	doc.ReadInMethod(path, method)
 	doc.ReadInReq(path, method, reqBodyData)
+	doc.ReadInQParams(path, method, queryParams)
 	doc.OutputSpec()
 
 

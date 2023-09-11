@@ -11,6 +11,7 @@ type Path struct {
 type PathMethod struct {
 	RequestBody map[string]interface{}
 	Responses   map[string]interface{}
+	Parameters  []map[string]string
 }
 
 func NewSpec() *Spec {
