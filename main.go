@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var controller *handler.ProxyHandler
+
 func main() {
 	reader := bufio.NewScanner(os.Stdin)
 	fmt.Print("ProxyScribe > ")
@@ -20,9 +22,26 @@ func main() {
 		}
 		switch input[0] {
 		case "record":
-			log.Print("Proxy is listening")
-			controller := &handler.ProxyHandler{}
-			log.Fatal(http.ListenAndServe(":4000", controller))
+			if controller != nil {
+				fmt.Println("Proxy is already recording")
+				break
+			}
+			go func () {
+				log.Print("Proxy is listening")
+				fmt.Println("ProxyScribe > ")
+				controller = &handler.ProxyHandler{}
+				log.Fatal(http.ListenAndServe(":4000", controller))
+			}()
+		case "finish":
+			if controller == nil {
+				fmt.Println("Cannot output spec because recording has not been started")
+				break
+			}
+			controller.Doc.OutputSpec()
+			fmt.Println("Spec has been outputted")
+			os.Exit(0)
+		default:
+			fmt.Println("Command not found")
 		}
 		fmt.Print("ProxyScribe > ")
 	}

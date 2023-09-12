@@ -12,6 +12,7 @@ import (
 )
 
 type ProxyHandler struct {
+	Doc *spec.Spec
 }
 
 func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +35,13 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// record request information
-	doc := spec.NewSpec()
+	var doc *spec.Spec
+	if p.Doc == nil {
+		doc = spec.NewSpec()
+		p.Doc = doc
+	} else {
+		doc = p.Doc
+	}
 	doc.ReadInPath(path)
 	doc.ReadInMethod(path, method)
 	doc.ReadInReq(path, method, reqBodyData)
@@ -58,7 +65,6 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 	doc.ReadInRes(path, method, resp.StatusCode, resBodyData)
-	doc.OutputSpec()
 
 	w.WriteHeader(resp.StatusCode)
 	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
