@@ -48,7 +48,9 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	doc.ReadInQParams(path, method, queryParams)
 
 	URL := host + path
-	log.Printf("Requesting %s ...", URL)
+	log.Printf("\n\tRequesting %s ...", URL)
+	fmt.Print("ProxyScribe > ")
+
 	reader := bytes.NewReader(buffer.Bytes())
 	resp, err := sendReq(method, URL, contentType, reader)
 	if err != nil {
