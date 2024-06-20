@@ -1,5 +1,5 @@
 # proxy-scribe
-✨ An integrated proxy for generating OpenAPI specs from captured HTTP traffic | Intended to expedite the tedious process of writing documentation!
+Tool for generating simple OpenAPI specs from URL paths in captured HTTP traffic
 
 ## How to use
 1. Configure your client application or automated tests to send requests to `localhost:4000`
